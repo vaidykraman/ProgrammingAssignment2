@@ -3,7 +3,7 @@
 
 ## Write a short comment describing this function
 
-## The function accepts the matrix as input and return list of functions 
+## The function accepts the matrix as input and returns list of functions 
 ## that can be invoked to set and get the cached values of matrix and 
 ## its inverse. 
 
@@ -45,11 +45,12 @@ makeCacheMatrix <- function(x = matrix()) {
 cacheSolve <- function(x, ...) {
         ## Return a Inverse matrix from the Cache
 		
-		## The function attempt to check the following condition to 
+		## The function attempts to check the following conditions to 
 		## determine if the inverse needs to be computed.
 		
 		## Condition #1 :: Check if the matrix supplied is valid
-		## without Null Value
+		## without Null Value. If Matrix is NULL, return inverse as 
+		## Empty Matrix too.
 		
 		## Condition #2 :: Check if the matrix supplied has changed
 		## since the inverse was computed last time. If it was not 
@@ -59,10 +60,12 @@ cacheSolve <- function(x, ...) {
 		
 		matrixValue <- x$getMatrix()
 
-		if(is.null(matrixValue)) {         	  ### Condition 1 - Return the NULL
+		if(is.null(matrixValue)) {      ### Condition 1 - Return the NULL
 			return (matrixValue)
 		}
-		else if (!x$isLatestInverse()) {      ### Condition 2 - Compute the inverse & Cache
+		else if (!x$isLatestInverse()) {      
+		
+		### Condition 2 - Compute the inverse and Cache.
 		
 			inverseValue <- solve(matrixValue)
 			x$setInverse(inverseValue)
@@ -73,9 +76,10 @@ cacheSolve <- function(x, ...) {
 			return (x$getInverse())
 		}
 }
-##########################
-## Examples
-##########################
+
+###########################################################################################
+## Examples - it is useful for reader to understand the tests performed to validated func.
+###########################################################################################
 ## Condition #1
 ##
 ##     mcm <- makeCacheMatrix(matrix())
@@ -86,7 +90,7 @@ cacheSolve <- function(x, ...) {
 ##          [,1]
 ##     [1,]   NA
 ##
-##########################
+###########################################################################################
 ## Condition #2
 ##     
 ##     > sampMat <- matrix(c(1:4),ncol=2,nrow=2)
@@ -108,4 +112,4 @@ cacheSolve <- function(x, ...) {
 ##     [2,]    2 -1.5
 ##     > 
 ##
-##########################
+###########################################################################################
