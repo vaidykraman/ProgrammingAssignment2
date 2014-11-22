@@ -13,15 +13,14 @@
 makeCacheMatrix <- function(x = matrix()) {
 	
 	inverseMat <- NULL
-	inputMatrix <<- x
 	latestInverse <<- FALSE
 	
 	setMatrix <- function (inpMatrix) {
-		inputMatrix <<- inpMatrix
+		x <<- inpMatrix
 		inverseMat <<- NULL
 		latestInverse <<- FALSE      ## Reset the flag to show inverse is outdated
 	}
-	getMatrix <- function () inputMatrix
+	getMatrix <- function () x
 	
 	setInverse <- function (inpInverse) {
 		inverseMat <<- inpInverse
@@ -44,7 +43,7 @@ makeCacheMatrix <- function(x = matrix()) {
 ## Write a short comment describing this function
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+        ## Return a Inverse matrix from the Cache
 		
 		## The function attempt to check the following condition to 
 		## determine if the inverse needs to be computed.
@@ -57,29 +56,56 @@ cacheSolve <- function(x, ...) {
 		## computed, determine the inverse and update the cache with 
 		## inverse
 		
-		## Condition #3 :: Return the inverse value
 		
+		matrixValue <- x$getMatrix()
 
-		cacheValues <- makeCacheMatrix(x)
-		
-		matrixValue <- cacheValues$getMatrix()
-
-		inverseValue <- cacheValues$getInverse()
-		
-		if(is.null(matrixValue)) {         				### Condition 1
+		if(is.null(matrixValue)) {         	  ### Condition 1 - Return the NULL
 			return (matrixValue)
 		}
-		else if (!cacheValues$isLatestInverse()) {      ### Condition 2
+		else if (!x$isLatestInverse()) {      ### Condition 2 - Compute the inverse & Cache
 		
-			cacheValues$setMatrix(x)
-			inverseValue <- solve(x)
-			cacheValues$setInverse(inverseValue)
+			inverseValue <- solve(matrixValue)
+			x$setInverse(inverseValue)
 			return (inverseValue)
 
 		}
-		else {                                          ### Condition 3
-			return (inverseValue)
+		else {                                          
+			return (x$getInverse())
 		}
-		
-		
 }
+##########################
+## Examples
+##########################
+## Condition #1
+##
+##     mcm <- makeCacheMatrix(matrix())
+##     > cacheSolve(mcm)
+##          [,1]
+##     [1,]   NA
+##     > mcm$getMatrix()
+##          [,1]
+##     [1,]   NA
+##
+##########################
+## Condition #2
+##     
+##     > sampMat <- matrix(c(1:4),ncol=2,nrow=2)
+##     > mcm$setMatrix(sampMat)
+##     > cacheSolve(mcm)
+##          [,1] [,2]
+##     [1,]   -2  1.5
+##     [2,]    1 -0.5
+##     > 
+##     > mcm$setMatrix(matrix(c(3:6),ncol=2,nrow=2))
+##     > cacheSolve(mcm)
+##           [,1] [,2]
+##     [1,]   -3  2.5
+##     [2,]    2 -1.5
+##     > 
+##     > cacheSolve(mcm)              ### Value obtained from Cache
+##          [,1] [,2]
+##     [1,]   -3  2.5
+##     [2,]    2 -1.5
+##     > 
+##
+##########################
